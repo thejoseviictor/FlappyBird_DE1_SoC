@@ -15,6 +15,8 @@ Acessando a memória física do sistema
 void open_memory(void)
 {
     fd = open("/dev/mem", O_RDWR | O_SYNC); // "fd": file descriptor;
+    if(fd == -1)
+        printf("Falha ao acessar a memória física!");
 }
 
 /*

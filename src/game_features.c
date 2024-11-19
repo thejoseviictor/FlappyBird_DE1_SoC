@@ -1,3 +1,5 @@
+// Funções relacionadas aos recursos de jogabilidade do jogo:
+
 #include "game_features.h"
 
 /**
@@ -30,18 +32,30 @@ int player1_row_sprite = 120;    // Posição inicial de linha do jogador 1.
 int player2_row_sprite = 344;    // Posição inicial de linha do jogador 2.
 int players_column_sprite = 160; // Posição inicial de coluna de ambos os jogadores.
 
+// Offsets dos sprites dos jogadores:
+int player1_sp_offset = 0;
+int player2_sp_offset = 1;
+
 /**
-* Vetor bidimensional que armazena os valores do background,
+* Array bidimensional que armazena os valores do background,
 * como: posições das nuvens e posições dos canos.
 */
 int background[60][80];
 
 /** 
-* Vetores bidimensionais que armazenam os layouts dos canos:
-* Uma linha desse vetor ocupa três coordenadas de linha
+* Arrays bidimensionais que armazenam os layouts dos canos:
+* Uma linha desse array ocupa três coordenadas de linha
 * e uma coluna ocupa quatro coordenadas de coluna no VGA
 */
-int pipes[3][8][1] = {
+int pipes[5][8][1] = {
+    {{0},
+     {0},
+     {1},
+     {1},
+     {1},
+     {1},
+     {1},
+     {1}},
     {{1},
      {0},
      {0},
@@ -65,7 +79,15 @@ int pipes[3][8][1] = {
      {1},
      {0},
      {0},
-     {1}}
+     {1}},
+    {{1},
+     {1},
+     {1},
+     {1},
+     {1},
+     {1},
+     {0},
+     {0}}
 };
 
 // Armazenando a pontuação de cada jogador (máximo: 67 pontos):
@@ -102,15 +124,9 @@ int player2_live2_register = 26;
 int player2_live3_register = 27;
 
 // Velocidade de deslocamento dos canos, que será decrementada de acordo com os pontos:
-int displacement_speed = 150;
+int displacement_speed = 500;
 
-// Níveis de jogo, no máximo 14, que serão incrementados após os canos finalizarem um deslocamento completo:
-int game_level = 0;
-
-// Sensibilidade de movimento do sprite do jogador 1, de acordo com o acelerômetro:
-int accelerometerSensitivity = 1800;
-
-// Limpando o vetor bidimensional e removendo os canos anteriores da tela:
+// Limpando o array bidimensional e removendo os canos anteriores da tela:
 int set_game_background(void){
     for(int row = 0; row < 60; row++){
         for(int column = 0; column < 80; column++){
@@ -133,7 +149,7 @@ int clean_screen(void){
             background_block_erase(row, column);
         }
     }
-    // // Removendo os polígonos e sprites:
+    // Removendo os polígonos e sprites:
     for(int address = 0; address < 32; address++){
         buffer_overflow();
         draw_polygon(address, 0, 0, 0, COLOR_WHITE, 0);
@@ -145,12 +161,11 @@ int clean_screen(void){
 
 /**
 * Exibindo os elementos na tela:
-* Correspondências dos valores no vetor bidimensional:
+* Correspondências dos valores no array bidimensional:
 * 1 - Cano
 * 2 - Pontos
 */
 int show_background(void){
-    // system("clear"); // Para o terminal (remover);
     for(int row = 0; row < 60; row++){
         for(int column = 0; column < 80; column++){ 
             // Exibindo os canos: 
@@ -171,27 +186,25 @@ int show_background(void){
                     background_drawing(row, column, COLOR_BLACK);
                 }
             }
-            // printf("%i", background[row][column]); // Para o terminal (remover);
         }
-        // printf("\n"); // Para o terminal (remover);
     }
     return 0;
 }
 
 // Exibe nuvens aleatórias nas áreas dos jogadores, usando polígonos:
-// NÃO ESTÁ FUNCIONANDO AINDA:
+// NÃO ESTÁ FUNCIONANDO AINDA!
 int show_clouds(int column_pipe1, int column_pipe2){
     // Randomizando alguns parâmetros da nuvem 1:
-    int cloud1_row_player1 = 10 + (rand() % 12); // Range usado da área do jogador 1: row[10:21]
-    int cloud1_row_player2 = 38 + (rand() % 12); // Range usado da área do jogador 2: row[38:49]
-    int cloud1_size = 1 + (rand() % 8);
-    int cloud1_type = rand() % 2;
-    // Randomizando alguns parâmetros da nuvem 2:
-    int cloud2_row_player1 = 10 + (rand() % 12); // Range usado da área do jogador 1: row[10:21]
-    int cloud2_row_player2 = 38 + (rand() % 12); // Range usado da área do jogador 2: row[38:49]
-    int cloud2_size = 1 + (rand() % 8);
-    int cloud2_type = rand() % 2;
-    // Exibindo a nuvem 1 nas áreas dos jogadores:
+    // int cloud1_row_player1 = 10 + (rand() % 12); // Range usado da área do jogador 1: row[10:21]
+    // int cloud1_row_player2 = 38 + (rand() % 12); // Range usado da área do jogador 2: row[38:49]
+    // int cloud1_size = 1 + (rand() % 8);
+    // int cloud1_type = rand() % 2;
+    // // Randomizando alguns parâmetros da nuvem 2:
+    // int cloud2_row_player1 = 10 + (rand() % 12); // Range usado da área do jogador 1: row[10:21]
+    // int cloud2_row_player2 = 38 + (rand() % 12); // Range usado da área do jogador 2: row[38:49]
+    // int cloud2_size = 1 + (rand() % 8);
+    // int cloud2_type = rand() % 2;
+    // // Exibindo a nuvem 1 nas áreas dos jogadores:
     // if(column_pipe1 >= 10){
     //     draw_polygon(16, cloud1_row_player1, bg_column_to_sp_column(column_pipe1)-10, cloud1_size, COLOR_WHITE, cloud1_type);
     //     draw_polygon(17, cloud1_row_player2, bg_column_to_sp_column(column_pipe1)-10, cloud1_size, COLOR_WHITE, cloud1_type);
@@ -234,27 +247,27 @@ int show_lives(void){
 int set_players(void){
     // Ativando e atualizando a posição do sprite do jogador 1:
     if(player1_gameover != 1)
-        set_sprite(player1_register, 0, player1_row_sprite, players_column_sprite, 1);
+        set_sprite(player1_register, player1_sp_offset, player1_row_sprite, players_column_sprite, 1);
     // Desativando o sprite do jogador 1, em caso de "game-over":
     else
-        set_sprite(player1_register, 0, player1_row_sprite, players_column_sprite, 0);
+        set_sprite(player1_register, player1_sp_offset, player1_row_sprite, players_column_sprite, 0);
     // Ativando e atualizando a posição do sprite do jogador 2:
     if(player2_gameover != 1)
-        set_sprite(player2_register, 1, player2_row_sprite, players_column_sprite, 1);
+        set_sprite(player2_register, player2_sp_offset, player2_row_sprite, players_column_sprite, 1);
     // Desativando o sprite do jogador 2, em caso de "game-over":
     else
-        set_sprite(player2_register, 1, player2_row_sprite, players_column_sprite, 0);
+        set_sprite(player2_register, player2_sp_offset, player2_row_sprite, players_column_sprite, 0);
     return 0;
 }
 
 /**
-* Lógica para colocar os canos na matriz e deslocá-los
-* linha repete 3 vezes
-* coluna repete 4 vezes
+* Lógica para colocar os canos no array bidimensional e deslocá-los:
+* As linhas se repetem três vezes e as colunas quatro vezes.
+* A maioria da lógica do jogo depende dos canos.
 */
 int set_pipe(void){
-    int select_pipe1 = rand() % 3; // Seleciona o cano que será exibido
-    int select_pipe2 = rand() % 3; // Seleciona o cano que será exibido
+    int select_pipe1 = rand() % 5; // Seleciona o cano que será exibido
+    int select_pipe2 = rand() % 5; // Seleciona o cano que será exibido
     int row_player1 = 4;           // Armazena o início das linhas da área jogável do jogador 1 no VGA.
     int row_player2 = 32;          // Armazena o início das linhas da área jogável do jogador 2 no VGA.
     int column_pipe1 = 79;         // Armazena o início das colunas da área jogável do jogador 1 no VGA.
@@ -264,25 +277,29 @@ int set_pipe(void){
     int wait_next_pipe_player1 = 0;// Lembra que já houve colisão com um cano específico, quando o jogador 1 colide com o seu bloco no background.
     int wait_next_pipe_player2 = 0;// Lembra que já houve colisão com um cano específico, quando o jogador 2 colide com o seu bloco no background.
     while(in_loop){
-        // Limpando o vetor bidimensional e removendo os canos anteriores da tela:
+        // Limpando o array bidimensional e removendo os canos anteriores da tela:
         if(in_loop != 0)
             set_game_background();
-        // Percorrendo o vetor bidimensional dos canos, e imprimindo eles na tela com uma escala maior:
+        // Percorrendo o array bidimensional dos canos, e imprimindo eles na tela com uma escala maior:
         for(int pipe_row = 0; pipe_row < 8; pipe_row++){
             for(int row_increment = 0; row_increment < 3; row_increment++){
                 for(int column_increment = 0; column_increment < 4; column_increment++){
                     // Exibindo o cano 1 em uma escala maior:
                     if(pipes[select_pipe1][pipe_row][0] == 1 && column_pipe1 != -1 && (column_pipe1+column_increment < 80)){
-                        background[row_player1+row_increment][column_pipe1+column_increment] = 1;
-                        background[row_player2+row_increment][column_pipe1+column_increment] = 1;
+                        if(!player1_gameover)
+                            background[row_player1+row_increment][column_pipe1+column_increment] = 1;
+                        if(!player2_gameover)
+                            background[row_player2+row_increment][column_pipe1+column_increment] = 1;
                     }
                     // Margem de 40 blocos, para habilitar o cano 2:
                     if(column_pipe1 < 40)
                         enable_pipe2 = 1;
                     // Exibindo o cano 2 em uma escala maior:
                     if(enable_pipe2 && pipes[select_pipe2][pipe_row][0] == 1 && column_pipe2 != -1 && (column_pipe2+column_increment < 80)){
-                        background[row_player1+row_increment][column_pipe2+column_increment] = 1;
-                        background[row_player2+row_increment][column_pipe2+column_increment] = 1;
+                        if(!player1_gameover)
+                            background[row_player1+row_increment][column_pipe2+column_increment] = 1;
+                        if(!player2_gameover)
+                            background[row_player2+row_increment][column_pipe2+column_increment] = 1;
                     }
                 }
             }
@@ -292,8 +309,11 @@ int set_pipe(void){
             if(row_player2 <= 53)
                 row_player2 += 3;
         }
-        show_background();                 // Exibindo os novos canos na tela.
-        usleep(displacement_speed * 1000); // Tempo de deslocamento dos canos.
+        // Exibindo a pontuação na tela:
+        if(score_player1 > 0 || score_player2 > 0)
+            show_score();
+        show_background();                 // Exibindo os novos canos e pontuação na tela.
+        usleep(displacement_speed);        // Tempo de deslocamento dos canos.
         row_player1 = 4;                   // Resetando o valor de início das linhas do jogador 1 no VGA.
         row_player2 = 32;                  // Resetando o valor de início das linhas do jogador 2 no VGA.
         // Decrementa a vida dos jogadores, se houver colisão com um cano:
@@ -310,10 +330,22 @@ int set_pipe(void){
                 wait_next_pipe_player2 = 4;            // Incrementado para esperar o próximo cano.
             }
         // Declarando o "game over" dos jogadores e removendo os seus sprites, caso haja colisão com o chão ou ao zerar todas as vidas:
-        if(player_ground_collision() == 1 || lives[0][0][0] == 0)
+        if(/*player_ground_collision() == 1 ||*/ lives[0][0][0] == 0){
             player1_gameover = 1;
-        if(player_ground_collision() == 2 || lives[1][0][0] == 0)
+            // Zerando as vidas do jogador 1:
+            if(lives[0][0][0] != 0)
+                for(int selected_live = 0; selected_live < 3; selected_live++){
+                    lives[0][0][selected_live] = 0;
+                }
+        }
+        if(/*player_ground_collision() == 2 ||*/ lives[1][0][0] == 0){
             player2_gameover = 1;
+            // Zerando as vidas do jogador 2:
+            if(lives[1][0][0] != 0)
+                for(int selected_live = 0; selected_live < 3; selected_live++){
+                    lives[1][0][selected_live] = 0;
+                }
+        }
         // Incrementando os pontos dos jogadores ao passar por um cano, exceto quando houve colisão:
         if((column_pipe1 == 18 || column_pipe2 == 18) && !player1_gameover && wait_next_pipe_player1 == 0 && score_player1 < 67)
             score_player1++;
@@ -336,19 +368,13 @@ int set_pipe(void){
         */ 
         if(column_pipe2 == -1 || (player1_gameover && player2_gameover)){
             in_loop = 0;                  // Desativa o loop de deslocamento dos canos.
-            if(game_level < 14)
-                game_level++;             // Incrementa o nível de jogo.
-            if(displacement_speed != 10)
-                displacement_speed -= 10; // Decrementa o tempo de deslocamento dos canos.
+            if(displacement_speed > 50)
+                displacement_speed -= 50; // Decrementa o tempo de deslocamento dos canos.
         }
-        // Exibindo a pontuação na tela:
-        if(score_player1 > 0 || score_player2 > 0)
-            show_score();
         show_clouds(column_pipe1, column_pipe2); // Exibindo as nuvens.
         show_lives();                            // Exibindo as vidas dos jogadores.
-        check_player1_input();                   // Verificando se há entradas do jogador 1.
         set_players();                           // Atualizando as posições dos jogadores.
-        show_background();
+        check_buttons();                         // Verificando os botões "KEY" como entradas que alteram o fluxo do jogo.
     }
     return 0;
 }
@@ -398,9 +424,9 @@ int player_pipe_collision(void){
 int player_ground_collision(void){
     int player1_collision = 0;    // Armazena o valor da colisão do jogador 1;
     int player2_collision = 0;    // Armazena o valor da colisão do jogador 2;
-    if(sp_row_to_bg_row(player1_row_sprite) >= 27) // Coordenadas do "chão" da área jogável do jogador 1
+    if(sp_row_to_bg_row(player1_row_sprite) > 26) // Coordenadas do "chão" da área jogável do jogador 1
         player1_collision = 1;    // Atualiza o valor da colisão do jogador 1;
-    if(sp_row_to_bg_row(player2_row_sprite) >= 55) // Coordenadas do "chão" da área jogável do jogador 2
+    if(sp_row_to_bg_row(player2_row_sprite) > 52) // Coordenadas do "chão" da área jogável do jogador 2
         player2_collision = 2;    // Atualiza o valor da colisão do jogador 2;
     if(player1_collision == 1 && player2_collision == 0)
         return player1_collision; // Apenas o jogador 1 colidiu com o "chão";
@@ -412,7 +438,7 @@ int player_ground_collision(void){
         return 0;                 // Nenhum dos jogadores colidiu com algum "chão";
 }
 
-// Exibe os pontos dos jogadores em pontos do vetor bidimensional, que será exibido na tela.
+// Exibe os pontos dos jogadores em pontos do array bidimensional, que será exibido na tela.
 int show_score(void){
     // Só será possível exibir "34" pontos em uma linha, então pontuações maiores
     // que "34" serão armazenadas em duas variáveis e exibidas em duas linhas.
@@ -436,12 +462,12 @@ int show_score(void){
             if(column % 2 == 1){
                 // Pontos do jogador 1:
                 if(score_player1_fhalf != 0){
-                    background[1][column] = 2; // Os pontos serão armazenados com o valor "2" no vetor bidimensional.
+                    background[1][column] = 2; // Os pontos serão armazenados com o valor "2" no array bidimensional.
                     score_player1_fhalf--;     // Decrementando a variável temporária dos pontos.
                 }
                 // Pontos do jogador 2:
                 if(score_player2_fhalf != 0){
-                    background[29][column] = 2; // Os pontos serão armazenados com o valor "2" no vetor bidimensional.
+                    background[29][column] = 2; // Os pontos serão armazenados com o valor "2" no array bidimensional.
                     score_player2_fhalf--;      // Decrementando a variável temporária dos pontos.
                 }
             }
@@ -454,12 +480,12 @@ int show_score(void){
             if(column % 2 == 0){
                 // Pontos do jogador 1:
                 if(score_player1_shalf != 0){
-                    background[2][column] = 2; // Os pontos serão armazenados com o valor "2" no vetor bidimensional.
+                    background[2][column] = 2; // Os pontos serão armazenados com o valor "2" no array bidimensional.
                     score_player1_shalf--;     // Decrementando a variável temporária dos pontos.
                 }
                 // Pontos do jogador 2:
                 if(score_player2_shalf != 0){
-                    background[30][column] = 2; // Os pontos serão armazenados com o valor "2" no vetor bidimensional.
+                    background[30][column] = 2; // Os pontos serão armazenados com o valor "2" no array bidimensional.
                     score_player2_shalf--;      // Decrementando a variável temporária dos pontos.
                 }
             }
@@ -478,12 +504,12 @@ int show_score(void){
             if(column % 2 == 1){
                 // Pontos do jogador 1:
                 if(score_temp1 != 0){
-                    background[1][column] = 2; // Os pontos serão armazenados com o valor "2" no vetor bidimensional.
+                    background[1][column] = 2; // Os pontos serão armazenados com o valor "2" no array bidimensional.
                     score_temp1--;             // Decrementando a variável temporária dos pontos.
                 }
                 // Pontos do jogador 2:
                 if(score_temp2 != 0){
-                    background[29][column] = 2; // Os pontos serão armazenados com o valor "2" no vetor bidimensional.
+                    background[29][column] = 2; // Os pontos serão armazenados com o valor "2" no array bidimensional.
                     score_temp2--;             // Decrementando a variável temporária dos pontos.
                 }
             }
@@ -492,25 +518,5 @@ int show_score(void){
                 column = 80;
         }
     }
-    return 0;
-}
-
-// Lê a entrada do eixo X do acelerômetro, que corresponde ao movimento vertical do jogador 1:
-// NÃO ESTÁ FUNCIONANDO AINDA:
-int check_player1_input(void){
-    int16_t x_axis = read_x(); // Lendo o valor do eixo X do acelerômetro ADXL345.
-    printf("Eixo X: %i\n", x_axis);
-    // Convertendo a coordenada de linha do sprite para coordenada de linha de background:
-    int player1_bg_row = sp_row_to_bg_row(player1_row_sprite);
-    // Movimenta dinâmicamente o sprite no sentido norte, para valores do eixo X maiores que 100:
-    if(x_axis > 100 && player1_bg_row > 4)
-        // Verificando o limite superior:
-        if((player1_bg_row -= x_axis/accelerometerSensitivity) > 4)
-            player1_row_sprite = bg_row_to_sp_row(player1_bg_row); // Atualizando a posição do jogador 1.
-    // Movimenta dinâmicamente o sprite no sentido sul, para valores do eixo X menores que 100:
-    else if(x_axis < -100 && player1_bg_row < 28)
-        // Verificando o limite inferior:
-        if((player1_bg_row += x_axis/accelerometerSensitivity) < 28)
-            player1_row_sprite = bg_row_to_sp_row(player1_bg_row); // Atualizando a posição do jogador 1.
     return 0;
 }

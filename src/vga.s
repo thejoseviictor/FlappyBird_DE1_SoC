@@ -29,6 +29,9 @@ ALT_LWFPGASLVS_OFST:    .word 0xFF200
 .global background_drawing
 .type background_drawing,%function
 
+.global sprite_drawing
+.type sprite_drawing,%function
+
 .global background_block_erase
 .type background_block_erase,%function
 
@@ -134,6 +137,41 @@ background_drawing:
     @Montando a instrução:
     LSL R0, #4               @Deslocando o endereço do bloco em 4 bits
     MOV R1, #2               @opcode(0010)
+    ADD R1, R1, R0           @Concatenando o "opcode" e o endereço de memória do bloco
+    @Carregando o endereço virtual:
+    LDR R0, =virtual_address
+    LDR R0, [R0]
+    @Enviado os dados da instrução:
+    MOV R3, #0               @Salvado a constante "0"
+    MOV R4, #1               @Salvando a constante "1"
+    STR R3, [R0, #WRREG]     @Desativando o sinal de "start"
+    STR R1, [R0, #DATA_A]    @Enviando o "opcode" e o endereço de memória do bloco para o "DATA_A"
+    STR R2, [R0, #DATA_B]    @Cor para "DATA_B"
+    STR R4, [R0, #WRREG]     @Sinal de "start"
+    STR R3, [R0, #WRREG]     @Desativando o sinal de "start"
+    @Removendo os registradores da pilha e saindo da função:
+    POP {R0, R1, R2, R3, R4, LR}
+    BX LR
+
+@Função de escrita na memória dos sprites (Instrução WSM):
+@Quantidade máxima de sprites: 32
+@Dimensões máximas de um sprite: 20x20 pixels
+@Quantidade de posições em pixels: 20 de linha e 640 de coluna
+@Expressão do endereço de 14 bits do pixel: (linha * 640) + coluna
+@Parâmetros:
+@R0 = Coordenada da linha
+@R1 = Coordenada da coluna
+@R2 = Cor
+sprite_drawing:
+    @Salvando os registradores na pilha:
+    PUSH {R0, R1, R2, R3, R4, LR}
+    @Calculando o endereço do bloco:
+    MOVW R3, #640            @Constante "640"
+    MUL R0, R0, R3           @R0 = linha * 640
+    ADD R0, R0, R1           @R0 = (linha * 640) + coluna
+    @Montando a instrução:
+    LSL R0, #4               @Deslocando o endereço do bloco em 4 bits
+    MOV R1, #1               @opcode(0001)
     ADD R1, R1, R0           @Concatenando o "opcode" e o endereço de memória do bloco
     @Carregando o endereço virtual:
     LDR R0, =virtual_address

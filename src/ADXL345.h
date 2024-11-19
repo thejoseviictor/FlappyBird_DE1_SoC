@@ -4,6 +4,7 @@
 #define ADXL345_H
 
 // Chamadas das Bibliotecas:
+#include <stdio.h>
 #include <fcntl.h>     // Para Manipulação de Arquivos
 #include <unistd.h>    // Para Fechar Arquivos
 #include <stdint.h>    // Para Inteiros de 8 e 16 bits
@@ -23,6 +24,9 @@
 #define DATAX1 0x33 // Byte Mais Significativo de X
 #define DATAY0 0x34 // Byte Menos Significativo de Y
 #define DATAY1 0x35 // Byte Mais Significativo de Y
+
+// Variáveis que serão usadas em outras bibliotecas:
+extern int fd; // "fd": file descriptor;
 
 // Cabeçalho das Funções:
 void open_memory(void);
