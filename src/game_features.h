@@ -10,10 +10,21 @@
 #include <unistd.h>
 #include "vga.h"
 #include "ADXL345.h"
+#include "GPIO.h"
+#include "player_inputs.h"
 
 // Variáveis que serão usadas em outras bibliotecas:
+extern int player1_sp_offset;
+extern int player2_sp_offset;
 extern int player1_gameover;
 extern int player2_gameover;
+extern int player1_row_sprite;
+extern int player2_row_sprite;
+extern int score_player1;
+extern int score_player2;
+extern int lives[2][1][3];
+extern int displacement_speed;
+extern int in_loop;
 
 // Cabeçalho das Funções:
 int set_game_background(void);
@@ -30,6 +41,5 @@ int bg_column_to_sp_column(int bg_column);
 int player_pipe_collision(void);
 int player_ground_collision(void);
 int show_score(void);
-int check_player1_input(void);
 
 #endif // GAME_FEATURES_H
