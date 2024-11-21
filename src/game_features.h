@@ -25,12 +25,13 @@ extern int score_player2;
 extern int lives[2][1][3];
 extern int displacement_speed;
 extern int in_loop;
+extern int on_pause;
 
 // Cabeçalho das Funções:
 int set_game_background(void);
 int clean_screen(void);
 int show_background(void);
-int show_clouds(int column_pipe1, int column_pipe2);
+void* show_clouds(void* arg);
 int show_lives(void);
 int set_players(void);
 int set_pipe(void);

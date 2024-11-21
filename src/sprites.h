@@ -10,6 +10,6 @@
 // Cabeçalho das Funções:
 int sprite_builder(int offset, const int sprite_array[20][20]);
 int flappy_bird_sprites(void);
-int sp_animation(void);
+void* sp_animation(void* arg);
 
 #endif // SPRITES_H
