@@ -166,9 +166,9 @@ sprite_drawing:
     @Salvando os registradores na pilha:
     PUSH {R0, R1, R2, R3, R4, LR}
     @Calculando o endereço do bloco:
-    MOVW R3, #640            @Constante "640"
-    MUL R0, R0, R3           @R0 = linha * 640
-    ADD R0, R0, R1           @R0 = (linha * 640) + coluna
+    MOV R3, #20              @Constante "20"
+    MUL R0, R0, R3           @R0 = linha * 20
+    ADD R0, R0, R1           @R0 = (linha * 20) + coluna
     @Montando a instrução:
     LSL R0, #4               @Deslocando o endereço do bloco em 4 bits
     MOV R1, #1               @opcode(0001)
@@ -297,11 +297,9 @@ set_sprite:
 
 @Desvio que previne o overflow do buffer de "DATA_A" e "DATA_B":
 buffer_overflow:
-    PUSH {R0, LR}
     LDR R0, =virtual_address
     LDR R0, [R0]
     LDR R0, [R0, #WRFULL]
     CMP R0, #1
     BEQ buffer_overflow
-    POP {R0, LR}
     BX LR
