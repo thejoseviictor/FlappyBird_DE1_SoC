@@ -12,10 +12,10 @@
 extern int fd_event;
 
 // Cabeçalho das Funções:
-void* check_player1_input(void* arg);
-void check_buttons(void);
+void* check_buttons(void* arg);
 void linux_event_file(void);
 void read_mouse_axis(void);
+void* check_player1_input(void* arg);
 void* check_player2_input(void* arg);
 
 #endif // PLAYER_INPUTS_H
