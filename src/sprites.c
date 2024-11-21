@@ -104,12 +104,32 @@ const int bird_player2_position2[20][20] = {
 
 // Desenhando um sprite na memória dos sprites, de acordo com o seu offset:
 int sprite_builder(int offset, const int sprite_array[20][20]){
-    offset = (offset+1) * 20; // Calculando as posições dos pixels de coluna de acordo com o offset.
     // Percorrendo o vetor bidimensional do sprite e o desenhando na memória dos sprites:
     for(int row = 0; row < 20; row++){
-        for(int column = 0; column < 20; column++){
-            if(sprite_array[row][column] > 0) // Verificando se há uma cor válida.
-                sprite_drawing(row, column+(offset-20), sprite_array[row][column]);
+        for(int column = 0; column < 21; column++){
+            buffer_overflow();
+            sprite_drawing(row, column, bird_player1_position1[row][column]);
+        }
+    }
+    for(int row = 20; row < 40; row++){
+        for(int column = 0; column < 21; column++){
+            buffer_overflow();
+            sprite_drawing(row, column, bird_player1_position2[row-20][column]);
+        }
+    }
+    for(int row = 40; row < 60; row++){
+        for(int column = 0; column < 21; column++){
+            buffer_overflow();
+            sprite_drawing(row, column, bird_player2_position1[row-40][column]);
+        }
+    }
+    for(int row = 60; row <= 80; row++){
+        for(int column = 0; column < 21; column++){
+            buffer_overflow();
+            if(row < 80)
+                sprite_drawing(row, column, bird_player2_position2[row-60][column]);
+            else
+                sprite_drawing(row, column, COLOR_ALPHA);
         }
     }
     return 0;
@@ -117,31 +137,28 @@ int sprite_builder(int offset, const int sprite_array[20][20]){
 
 // Armazenando os sprites na memória:
 int flappy_bird_sprites(void){
-    sprite_builder(26, bird_player1_position1); // Jogador 1, Posição 1, no Offset 26.
-    sprite_builder(27, bird_player1_position2); // Jogador 1, Posição 2, no Offset 27.
-    sprite_builder(28, bird_player2_position1); // Jogador 2, Posição 1, no Offset 28.
-    sprite_builder(29, bird_player2_position2); // Jogador 2, Posição 2, no Offset 29.
+    sprite_builder(2, bird_player2_position1); // Jogador 2, Posição 1, no Offset 28.
     return 0;
 }
 
 // Animação dos sprites dos jogadores (03 FPS):
 // Deverá ser usado em uma thread.
-int sp_animation(void){
+void* sp_animation(void* arg){
     while(!(player1_gameover && player2_gameover)){
         if(!player1_gameover){
-            if(player1_sp_offset == 26)
-                player1_sp_offset = 27;
+            if(player1_sp_offset == 0)
+                player1_sp_offset = 1;
             else
-                player1_sp_offset = 26;   
+                player1_sp_offset = 0;   
         }
         if(!player2_gameover){
-            if(player2_sp_offset == 28)
-                player2_sp_offset = 29;
+            if(player2_sp_offset == 2)
+                player2_sp_offset = 3;
             else
-                player2_sp_offset = 28;   
+                player2_sp_offset = 2;   
         }
         set_players();      // Atualizando o estado dos sprites dos jogadores.
         usleep(300 * 1000); // Aproximadamente, 03 FPS (Frames Per Second / Imagens por Segundo).
     }
-    return 0;
+    return NULL;
 }
