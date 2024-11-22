@@ -104,40 +104,28 @@ const int bird_player2_position2[20][20] = {
 
 // Desenhando um sprite na memória dos sprites, de acordo com o seu offset:
 int sprite_builder(int offset, const int sprite_array[20][20]){
-    // Percorrendo o vetor bidimensional do sprite e o desenhando na memória dos sprites:
-    for(int row = 0; row < 20; row++){
+    // Os sprites são desenhados verticalmente na memória:
+    int row_start = 0 + (offset * 20); // Posição inicial do loop de linhas.
+    int row_end = row_start + 20;      // Posição final do loop de linhas.
+    // Percorrendo o array bidimensional e a memória dos sprites:
+    for(int row = row_start; row < row_end; row++){
         for(int column = 0; column < 21; column++){
             buffer_overflow();
-            sprite_drawing(row, column, bird_player1_position1[row][column]);
-        }
-    }
-    for(int row = 20; row < 40; row++){
-        for(int column = 0; column < 21; column++){
-            buffer_overflow();
-            sprite_drawing(row, column, bird_player1_position2[row-20][column]);
-        }
-    }
-    for(int row = 40; row < 60; row++){
-        for(int column = 0; column < 21; column++){
-            buffer_overflow();
-            sprite_drawing(row, column, bird_player2_position1[row-40][column]);
-        }
-    }
-    for(int row = 60; row <= 80; row++){
-        for(int column = 0; column < 21; column++){
-            buffer_overflow();
-            if(row < 80)
-                sprite_drawing(row, column, bird_player2_position2[row-60][column]);
-            else
+            sprite_drawing(row, column, sprite_array[row-row_start][column]);
+            // Apagando a última linha do sprite no offset 3:
+            if(row == 80)
                 sprite_drawing(row, column, COLOR_ALPHA);
         }
     }
     return 0;
 }
 
-// Armazenando os sprites na memória:
+// Armazenando os sprites do "Flappy Bird" na memória:
 int flappy_bird_sprites(void){
-    sprite_builder(2, bird_player2_position1); // Jogador 2, Posição 1, no Offset 28.
+    sprite_builder(0, bird_player1_position1); // Jogador 1, Posição 1, no Offset 0.
+    sprite_builder(1, bird_player1_position2); // Jogador 1, Posição 2, no Offset 1.
+    sprite_builder(2, bird_player2_position1); // Jogador 2, Posição 1, no Offset 2.
+    sprite_builder(3, bird_player2_position2); // Jogador 2, Posição 2, no Offset 3.
     return 0;
 }
 

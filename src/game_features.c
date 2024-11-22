@@ -312,7 +312,7 @@ int bg_column_to_sp_column(int bg_column){
 }
 
 /*
-* Verifica se há um espaço vazio na coluna do sprite + 15.
+* Verifica se há um espaço vazio na coluna do sprite + 25.
 * Se não, e houver uma parte do cano, haverá colisão.
 */
 int player_pipe_collision(int pipe_column, int pipe_disabled_row){
