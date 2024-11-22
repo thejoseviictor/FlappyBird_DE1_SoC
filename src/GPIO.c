@@ -28,13 +28,13 @@ int read_keys(void){
     if (*KEYS_BASE == 0xF)
         key_state = 0;  // Nenhum botão está pressionado.
     else if (*KEYS_BASE == 0xE)
-        key_state = 1;  // O botão (KEY0) está pressionado.
+        key_state = 4;  // O botão (KEY0) está pressionado.
     else if (*KEYS_BASE == 0xD)
-        key_state = 2;  // O botão (KEY1) está pressionado.
+        key_state = 3;  // O botão (KEY1) está pressionado.
     else if (*KEYS_BASE == 0xB)
-        key_state = 3;  // O botão (KEY2) está pressionado.
+        key_state = 2;  // O botão (KEY2) está pressionado.
     else if (*KEYS_BASE == 0x7)
-        key_state = 4;  // O botão (KEY3) está pressionado.
+        key_state = 1;  // O botão (KEY3) está pressionado.
     else
         key_state = 0; // Se mais de um botão estiver pressionado.
     return key_state;
