@@ -15,38 +15,41 @@ int mouse_y_axis = 0;
 void* check_buttons(void* arg){
     while(!(player1_gameover & player2_gameover)){
         // Pausando o jogo ao pressionar o botão 2 (KEY1):
-        // if(read_keys() == 2)
-        //     on_pause = 1;
-        // // Retomando o jogo ao pressionar o botão 1 (KEY0):
-        // if(read_keys() == 1)
-        //     on_pause = 0;
-        // // Reiniciando o jogo ao pressionar o botão 3 (KEY2):
-        // if(read_keys() == 3){
-        //     clean_screen(); // Limpando a tela.
-        //     // Reposicionando os "sprites" dos jogadores:
-        //     player1_row_sprite = 120;
-        //     player2_row_sprite = 344;
-        //     set_players();
-        //     // Resetando e exibindo os pontos dos jogadores:
-        //     score_player1 = 0;
-        //     score_player2 = 0;
-        //     show_score();
-        //     // Resetando e exibindo as vidas dos jogadores:
-        //     for(int selected_player = 0; selected_player < 2; selected_player++){
-        //         for(int selected_live = 0; selected_live < 3; selected_live++){
-        //             lives[selected_player][0][selected_live] = 1;
-        //         }
-        //     }
-        //     show_lives();
-        //     displacement_speed = 500; // Resetando a velocidade de deslocamento dos canos.
-        //     in_loop = 0;              // Reiniciando o "loop" de deslocamento dos canos.
-        // }
-        // // Forçando a saída do jogo ao pressionar o botão 4 (KEY3):
-        // if(read_keys() == 4){
-        //     player1_gameover = 1;
-        //     player2_gameover = 1;
-        //     in_loop = 0;
-        // }
+        if(read_keys() == 2)
+            on_pause = 1;
+        // Retomando o jogo ao pressionar o botão 1 (KEY0):
+        if(read_keys() == 1)
+            on_pause = 0;
+        // Reiniciando o jogo ao pressionar o botão 3 (KEY2):
+        if(read_keys() == 3){
+            // Restaurando o "GAMEOVER":
+            player1_gameover = 0;
+            player2_gameover = 0;
+            // Reposicionando os "sprites" dos jogadores:
+            player1_row_sprite = 120;
+            player2_row_sprite = 344;
+            set_players();
+            // Resetando os pontos dos jogadores:
+            score_player1 = 0;
+            score_player2 = 0;
+            // Resetando as vidas dos jogadores:
+            for(int selected_player = 0; selected_player < 2; selected_player++){
+                for(int selected_live = 0; selected_live < 3; selected_live++){
+                    lives[selected_player][0][selected_live] = 1;
+                }
+            }
+            player1_live_pointer = 2; // Resetando o ponteiro do índice das vidas do jogador 1.
+            player2_live_pointer = 2; // Resetando o ponteiro do índice das vidas do jogador 2.
+            displacement_speed = 500; // Resetando a velocidade de deslocamento dos canos.
+            pipe_loop = 0;            // Reiniciando o "loop" de deslocamento dos canos.
+            clean_screen();           // Limpando a tela.
+        }
+        // Forçando a saída do jogo ao pressionar o botão 4 (KEY3):
+        if(read_keys() == 4){
+            player1_gameover = 1;
+            player2_gameover = 1;
+            pipe_loop = 0;
+        }
     }
     return NULL;
 }
@@ -70,12 +73,9 @@ void read_mouse_axis(void){
     }
 }
 
-/**
-* Lendo o eixo X do acelerômetro:
-* O movimento horizontal do eixo X do acelerômetro, será convertido para movimento vertical do jogador 1.
-*/
+// O movimento horizontal do eixo X do acelerômetro, será convertido para movimento vertical do jogador 1.
 void* check_player1_input(void* arg){
-    while(!player1_gameover){
+    while(!(player1_gameover && player2_gameover)){
         int16_t x_axis = read_x(); // Lendo o valor do eixo X do acelerômetro "ADXL345".
         /**
         * Convertendo a coordenada de linha do sprite para coordenada de linha do background,
@@ -87,16 +87,14 @@ void* check_player1_input(void* arg){
             player1_row_sprite += x_axis / accelerometerSensitivity; // Atualizando o valor de linha do sprite;
             set_players(); // Atualizando as posições dos sprites dos jogadores.
         }
+        while(on_pause){}  // Estado de pausa do jogo.
     }
     return NULL;
 }
 
-/**
-* Lendo o eixo Y do mouse:
-* O jogador 2 irá se movimentar de acordo com os eventos do eixo vertical Y do mouse.
-*/
+// O jogador 2 irá se movimentar de acordo com os eventos do eixo vertical Y do mouse.
 void* check_player2_input(void* arg){
-    while(!player2_gameover){
+    while(!(player1_gameover && player2_gameover)){
         read_mouse_axis(); // Atualizando o valor do eixo Y do mouse.
         /**
         * Convertendo a coordenada de linha do sprite para coordenada de linha do background,
@@ -108,6 +106,7 @@ void* check_player2_input(void* arg){
             player2_row_sprite += mouse_y_axis;
             set_players(); // Atualizando as posições dos sprites dos jogadores.
         }
+        while(on_pause){}  // Estado de pausa do jogo.
     }
     return NULL;
 }
