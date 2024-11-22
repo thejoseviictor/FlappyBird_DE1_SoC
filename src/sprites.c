@@ -142,7 +142,6 @@ int flappy_bird_sprites(void){
 }
 
 // Animação dos sprites dos jogadores (03 FPS):
-// Deverá ser usado em uma thread.
 void* sp_animation(void* arg){
     while(!(player1_gameover && player2_gameover)){
         if(!player1_gameover){
@@ -157,7 +156,9 @@ void* sp_animation(void* arg){
             else
                 player2_sp_offset = 2;   
         }
+        buffer_overflow();
         set_players();      // Atualizando o estado dos sprites dos jogadores.
+        while(on_pause){}   // Estado de pausa do jogo.
         usleep(300 * 1000); // Aproximadamente, 03 FPS (Frames Per Second / Imagens por Segundo).
     }
     return NULL;

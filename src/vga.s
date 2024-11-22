@@ -156,8 +156,8 @@ background_drawing:
 @Função de escrita na memória dos sprites (Instrução WSM):
 @Quantidade máxima de sprites: 32
 @Dimensões máximas de um sprite: 20x20 pixels
-@Quantidade de posições em pixels: 20 de linha e 640 de coluna
-@Expressão do endereço de 14 bits do pixel: (linha * 640) + coluna
+@Quantidade de posições em pixels: 640 de linha e 20 de coluna
+@Expressão do endereço de 14 bits do pixel: (linha * 20) + coluna
 @Parâmetros:
 @R0 = Coordenada da linha
 @R1 = Coordenada da coluna
