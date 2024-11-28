@@ -24,15 +24,11 @@ int show_gameover_screen(void){
                 for(int column_increment = 0; column_increment < 3; column_increment++){
                     if(game_over_screen[row][column] == 1){
                         // Área jogável do jogador 1:
-                        if(player1_gameover){
-                            buffer_overflow();
-                            background_drawing(row+screen_row_player1+row_increment, column+screen_column+column_increment, COLOR_ORANGE);
-                        }
+                        if(player1_gameover)
+                            background_drawing(row+screen_row_player1+row_increment, column+screen_column+column_increment, game_over_color);
                         // Área jogável do jogador 2:
-                        if(player2_gameover){
-                            buffer_overflow();
-                            background_drawing(row+screen_row_player2+row_increment, column+screen_column+column_increment, COLOR_ORANGE);
-                        }
+                        if(player2_gameover)
+                            background_drawing(row+screen_row_player2+row_increment, column+screen_column+column_increment, game_over_color);
                     }
                 }
                 screen_column += 1; // Próximo conjunto de colunas.
