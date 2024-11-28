@@ -103,38 +103,30 @@ int clean_screen(void){
     // Removendo os blocos de background:
     for(int row = 0; row < 60; row++){
         for(int column = 0; column < 80; column++){
-            buffer_overflow();
             background_block_erase(row, column);
         }
     }
     // Removendo os polígonos e sprites:
     for(int address = 0; address < 32; address++){
-        buffer_overflow();
         draw_polygon(address, 0, 0, 0, COLOR_WHITE, 0);
-        if(address > 0){
-            buffer_overflow();
+        if(address > 0)
             set_sprite(address, 0, 0, 0, 0);
-        }
     }
     return 0;
 }
 
 // Exibindo os pontos e bordas na tela:
-int show_background(void){
+int render_background(void){
     for(int row = 0; row < 60; row++){
         for(int column = 0; column < 80; column++){ 
             // Exibindo os pontos:
-            if(background[row][column] == 1){
-                buffer_overflow();
+            if(background[row][column] == 1)
                 background_drawing(row, column, COLOR_YELLOW);
-            }
             // Exibindo as bordas:
             if(row < 4 || (row >= 28 && row < 32) || row >= 56){
                 // Verifica se há pontos sendo exibidos naquela posição:
-                if(background[row][column] != 1){
-                    buffer_overflow();
+                if(background[row][column] != 1)
                     background_drawing(row, column, COLOR_BLACK);
-                }
             }
         }
     }
@@ -145,19 +137,13 @@ int show_background(void){
 int show_lives(void){
     // Vidas do jogador 1:
     int player1_live_row = bg_row_to_sp_row(1);
-    buffer_overflow();
     set_sprite(player1_live1_register, heart_sp_offset, player1_live_row, bg_column_to_sp_column(1), lives[0][0][0]);
-    buffer_overflow();
     set_sprite(player1_live2_register, heart_sp_offset, player1_live_row, bg_column_to_sp_column(5), lives[0][0][1]);
-    buffer_overflow();
     set_sprite(player1_live3_register, heart_sp_offset, player1_live_row, bg_column_to_sp_column(9), lives[0][0][2]);
     // Vidas do jogador 2:
     int player2_live_row = bg_row_to_sp_row(29);
-    buffer_overflow();
     set_sprite(player2_live1_register, heart_sp_offset, player2_live_row, bg_column_to_sp_column(1), lives[1][0][0]);
-    buffer_overflow();
     set_sprite(player2_live2_register, heart_sp_offset, player2_live_row, bg_column_to_sp_column(5), lives[1][0][1]);
-    buffer_overflow();
     set_sprite(player2_live3_register, heart_sp_offset, player2_live_row, bg_column_to_sp_column(9), lives[1][0][2]);
     return 0;
 }
@@ -165,26 +151,40 @@ int show_lives(void){
 // Posicionando e atualizando os sprites dos jogadores na tela:
 int set_players(void){
     // Ativando e atualizando a posição do sprite do jogador 1:
-    if(player1_gameover != 1){
-        buffer_overflow();
+    if(player1_gameover != 1)
         set_sprite(player1_register, player1_sp_offset, player1_row_sprite, players_column_sprite, 1);
-    }
     // Desativando o sprite do jogador 1, em caso de "GAMEOVER":
-    else{
-        buffer_overflow();
+    else
         set_sprite(player1_register, player1_sp_offset, player1_row_sprite, players_column_sprite, 0);
-    }
     // Ativando e atualizando a posição do sprite do jogador 2:
-    if(player2_gameover != 1){
-        buffer_overflow();
+    if(player2_gameover != 1)
         set_sprite(player2_register, player2_sp_offset, player2_row_sprite, players_column_sprite, 1);
-    }
     // Desativando o sprite do jogador 2, em caso de "GAMEOVER":
-    else{
-        buffer_overflow();
+    else
         set_sprite(player2_register, player2_sp_offset, player2_row_sprite, players_column_sprite, 0);
-    }
     return 0;
+}
+
+// Renderizando as nuvens na tela:
+void* render_clouds(void* arg){
+    while(!game_exit){
+        for(int cloud_column = 500; cloud_column >= 0; cloud_column--){
+            // Desenhando duas nuvens, uma em cada área de jogo:
+            if(cloud_column != 0){
+                if(!player1_gameover)
+                    draw_polygon(3, 110, cloud_column, 3, COLOR_WHITE, 0); // Registrador 3, na área do jogador 1.
+                if(!player2_gameover)
+                    draw_polygon(4, 334, cloud_column, 3, COLOR_WHITE, 0); // Registrador 4, na área do jogador 2.
+            }
+            // Removendo as nuvens, quando ambas chegarem na borda oeste:
+            else{
+                draw_polygon(3, 0, 0, 0, COLOR_WHITE, 0);
+                draw_polygon(4, 0, 0, 0, COLOR_WHITE, 0);
+            }
+            usleep(1000); // Tempo de deslocamento das nuvens.
+        }
+    }
+    return NULL;
 }
 
 /**
@@ -209,14 +209,11 @@ int set_pipe(void){
                     // Verificando o intervalo do endereço e o estado do "GAMEOVER", e desenhando o cano na área do jogador 1:
                     if(address <= 9 && !player1_gameover){
                         // Se não for uma posição desativada, desenhe o polígono nessa posição de linha:
-                        if(pipe_draw_row != pipe_rows_player1[pipe_disabled_row]){
-                            buffer_overflow();
+                        if(pipe_draw_row != pipe_rows_player1[pipe_disabled_row])
                             draw_polygon(address, bg_row_to_sp_row(pipe_draw_row), pipe_column, 2, COLOR_GREEN, 0);
-                        }
                         // Se for uma posição desativada, desenhe o polígono na posição de linha + 4;
                         else{
                             pipe_draw_row += 4; // Incrementando a linha, para a linha do próximo polígono.
-                            buffer_overflow();
                             draw_polygon(address, bg_row_to_sp_row(pipe_draw_row), pipe_column, 2, COLOR_GREEN, 0);
                         }
                         // Incrementando a linha, para a linha do próximo polígono:
@@ -224,13 +221,10 @@ int set_pipe(void){
                     }
                     // Verificando o intervalo do endereço e o estado do "GAMEOVER", e desenhando o cano na área do jogador 2:
                     if(address >= 10 && !player2_gameover){
-                        if(pipe_draw_row != pipe_rows_player2[pipe_disabled_row]){
-                            buffer_overflow();
+                        if(pipe_draw_row != pipe_rows_player2[pipe_disabled_row])
                             draw_polygon(address, bg_row_to_sp_row(pipe_draw_row), pipe_column, 2, COLOR_GREEN, 0);
-                        }
                         else{
                             pipe_draw_row += 4;
-                            buffer_overflow();
                             draw_polygon(address, bg_row_to_sp_row(pipe_draw_row), pipe_column, 2, COLOR_GREEN, 0);
                         }
                         pipe_draw_row += 4; 
@@ -240,10 +234,8 @@ int set_pipe(void){
                         pipe_draw_row = 34;
                 }
                 // Removendo os canos ao chegarem na sua última posição de coluna:
-                else{
-                    buffer_overflow();
+                else
                     draw_polygon(address, 0, 0, 0, COLOR_GREEN, 0);
-                }
             }
             pipe_column -= 5; // Decrementando suas colunas e deslocando os canos para a esquerda.
         }
@@ -269,15 +261,9 @@ int set_pipe(void){
         // Declarando o "GAMEOVER" do jogador 1 e removendo o seu sprite, ao zerar todas as vidas:
         if(lives[0][0][0] == 0)
             player1_gameover = 1;
-        // Declarando o "GAMEOVER" do jogador 2 e removendo o seu sprite, caso haja colisão com o chão ou ao zerar todas as vidas:
-        if(player_ground_collision() == 2 || lives[1][0][0] == 0){
+        // Declarando o "GAMEOVER" do jogador 2 e removendo o seu sprite, ao zerar todas as vidas:
+        if(lives[1][0][0] == 0)
             player2_gameover = 1;
-            // Zerando as vidas do jogador 2, se houve colisão com o chão:
-            if(lives[1][0][0] != 0)
-                for(int selected_live = 0; selected_live < 3; selected_live++){
-                    lives[1][0][selected_live] = 0;
-                }
-        }
         // Incrementando a velocidade no último laço e encerrando o jogo se houver "GAMEOVER" de ambos os jogadores:
         if(pipe_column == -1 || (player1_gameover && player2_gameover)){
             pipe_loop = 0; // Desativa o loop de deslocamento dos canos.
@@ -324,13 +310,13 @@ int player_pipe_collision(int pipe_column, int pipe_disabled_row){
         int polygon_dis_upper_boundary_pl1 = bg_row_to_sp_row(pipe_rows_player1[pipe_disabled_row]) - 15; // Borda superior do polígono desativado.
         int polygon_dis_lower_boundary_pl1 = polygon_dis_upper_boundary_pl1 + 30;                         // Borda inferior do polígono desativado.
         // Verificando se o jogador 1 está fora dos limites do polígono desativado:
-        if(player1_row_sprite < polygon_dis_upper_boundary_pl1 || player1_row_sprite > polygon_dis_lower_boundary_pl1)
+        if(player1_row_sprite < polygon_dis_upper_boundary_pl1-1 || player1_row_sprite > polygon_dis_lower_boundary_pl1)
             player1_collision = 1; // O jogador 1 colidiu com o cano;
         // Colisão do jogador 2, com o cano:
         int polygon_dis_upper_boundary_pl2 = bg_row_to_sp_row(pipe_rows_player2[pipe_disabled_row]) - 15; // Borda superior do polígono desativado.
         int polygon_dis_lower_boundary_pl2 = polygon_dis_upper_boundary_pl2 + 30;                         // Borda inferior do polígono desativado.
         // Verificando se o jogador 2 está fora dos limites do polígono desativado:
-        if(player2_row_sprite < polygon_dis_upper_boundary_pl2 || player2_row_sprite > polygon_dis_lower_boundary_pl2)
+        if(player2_row_sprite < polygon_dis_upper_boundary_pl2-1 || player2_row_sprite > polygon_dis_lower_boundary_pl2)
             player2_collision = 2; // O jogador 2 colidiu com o cano;
     }
     // Verificando a quantidade de colisões e fazendo o retorno:
@@ -344,27 +330,9 @@ int player_pipe_collision(int pipe_column, int pipe_disabled_row){
         return 0;                 // Nenhum dos jogadores colidiu com algum cano;
 }
 
-// Verifica se os jogadores atingiram o "chão" de suas respectivas áreas jogáveis:
-int player_ground_collision(void){
-    int player1_collision = 0;    // Armazena o valor da colisão do jogador 1;
-    int player2_collision = 0;    // Armazena o valor da colisão do jogador 2;
-    if(sp_row_to_bg_row(player1_row_sprite) > 26) // Coordenadas do "chão" da área jogável do jogador 1
-        player1_collision = 1;    // Atualiza o valor da colisão do jogador 1;
-    if(sp_row_to_bg_row(player2_row_sprite) > 53) // Coordenadas do "chão" da área jogável do jogador 2
-        player2_collision = 2;    // Atualiza o valor da colisão do jogador 2;
-    if(player1_collision == 1 && player2_collision == 0)
-        return player1_collision; // Apenas o jogador 1 colidiu com o "chão";
-    else if(player1_collision == 0 && player2_collision == 2)
-        return player2_collision; // Apenas o jogador 2 colidiu com o "chão";
-    else if(player1_collision == 1 && player2_collision == 2)
-        return 3;                 // Ambos os jogadores colidiram com o seus "chãos";
-    else
-        return 0;                 // Nenhum dos jogadores colidiu com algum "chão";
-}
-
 // Exibe os pontos dos jogadores em pontos do array bidimensional, que será exibido na tela:
 void* show_score_and_gameover(void* arg){
-    while(!(player1_gameover && player2_gameover)){
+    while(!game_exit){
         // Só será possível exibir "34" pontos em uma linha, então pontuações maiores
         // que "34" serão armazenadas em duas variáveis e exibidas em duas linhas.
         if(score_player1 > 34 || score_player2 > 34){
@@ -443,7 +411,7 @@ void* show_score_and_gameover(void* arg){
                     column = 80;
             }
         }
-        show_background();      // Exibindo as pontuações na tela.
+        render_background();      // Exibindo as pontuações na tela.
         show_gameover_screen(); // Exibindo "GAMEOVER" na tela.
     }
     return NULL;

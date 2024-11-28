@@ -103,16 +103,16 @@ void setting_I2C0_ADXL345(void)
 Configurações iniciais dos sensores do ADXL345:
 No Registrador BW_RATE - 0x2C:
 	Modo de Operação: Normal
-	Rate: Taxa de Dados de Saída: 200 Hz | Largura de Banda: 100 Hz
-	Configuração Resultante: 0x0B
+	Rate: Taxa de Dados de Saída: 100 Hz | Largura de Banda: 50 Hz
+	Configuração Resultante: 0x0A
 No Registrador POWER_CTL - 0x2D:
 	Medição: Habilitada
 	Frequência de Leitura: 4Hz (4 vezes por segundo - 250ms)
 	Configuração Resultante: 0x0D
 No Registrador DATA_FORMAT - 0x31:
 	Modo de Resolução: Alta
-	Intervalo de Aceleração (G-Range): +-16g.
-	Configuração Resultante: 0x07
+	Intervalo de Aceleração (G-Range): +-2g.
+	Configuração Resultante: 0x01
 */
 void setting_ADXL345(void)
 {
@@ -138,7 +138,7 @@ void setting_ADXL345(void)
 
     // Configurando o BW_RATE:
     * I2C0_DATA = BW_RATE + 0x400;
-    * I2C0_DATA = 0x0B;
+    * I2C0_DATA = 0x0A;
 
     // Configurando o POWER_CTL:
     * I2C0_DATA = POWER_CTL + 0x400;
@@ -146,7 +146,7 @@ void setting_ADXL345(void)
 
     // Configurando o DATA_FORMAT:
     * I2C0_DATA = DATA_FORMAT + 0x400;
-    * I2C0_DATA = 0x07;
+    * I2C0_DATA = 0x01;
 }
 
 // Ler e retornar valores do Eixo X do ADXL345:

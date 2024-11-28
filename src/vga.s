@@ -111,6 +111,10 @@ background_color:
     MOV R2, #0               @Salvado a constante "0" no R2
     MOV R3, #1               @Salvando a constante "1" no R3
     STR R2, [R0, #WRREG]     @Desativando o sinal de "start"
+    @Verificando se há espaço no buffer:
+    PUSH {R0}
+    BL buffer_overflow
+    POP {R0}
     STR R2, [R0, #DATA_A]    @opcode(0000) e registrador R9 (1001) para "DATA_A"
     STR R1, [R0, #DATA_B]    @Valor de cor do parâmetro, que foi armazenado em R1, para "DATA_B"
     STR R3, [R0, #WRREG]     @Sinal de "start"
@@ -145,6 +149,10 @@ background_drawing:
     MOV R3, #0               @Salvado a constante "0"
     MOV R4, #1               @Salvando a constante "1"
     STR R3, [R0, #WRREG]     @Desativando o sinal de "start"
+    @Verificando se há espaço no buffer:
+    PUSH {R0}
+    BL buffer_overflow
+    POP {R0}
     STR R1, [R0, #DATA_A]    @Enviando o "opcode" e o endereço de memória do bloco para o "DATA_A"
     STR R2, [R0, #DATA_B]    @Cor para "DATA_B"
     STR R4, [R0, #WRREG]     @Sinal de "start"
@@ -180,6 +188,10 @@ sprite_drawing:
     MOV R3, #0               @Salvado a constante "0"
     MOV R4, #1               @Salvando a constante "1"
     STR R3, [R0, #WRREG]     @Desativando o sinal de "start"
+    @Verificando se há espaço no buffer:
+    PUSH {R0}
+    BL buffer_overflow
+    POP {R0}
     STR R1, [R0, #DATA_A]    @Enviando o "opcode" e o endereço de memória do bloco para o "DATA_A"
     STR R2, [R0, #DATA_B]    @Cor para "DATA_B"
     STR R4, [R0, #WRREG]     @Sinal de "start"
@@ -212,6 +224,10 @@ background_block_erase:
     MOV R3, #0               @Salvado a constante "0"
     MOV R4, #1               @Salvando a constante "1"
     STR R3, [R0, #WRREG]     @Desativando o sinal de "start"
+    @Verificando se há espaço no buffer:
+    PUSH {R0}
+    BL buffer_overflow
+    POP {R0}
     STR R1, [R0, #DATA_A]    @Enviando o "opcode" e o endereço de memória do bloco para o "DATA_A"
     STR R2, [R0, #DATA_B]    @Cor de "reset" para "DATA_B"
     STR R4, [R0, #WRREG]     @Sinal de "start"
@@ -252,6 +268,10 @@ draw_polygon:
     MOV R2, #0              @Salvado a constante "0"
     MOV R3, #1              @Salvando a constante "1"
     STR R2, [R0, #WRREG]    @Desativando o sinal de start
+    @Verificando se há espaço no buffer:
+    PUSH {R0}
+    BL buffer_overflow
+    POP {R0}
     STR R7, [R0, #DATA_A]   @"opcode" e "endereço" para "DATA_A"
     STR R1, [R0, #DATA_B]   @"coluna", "linha", "tamanho", "cor" e "tipo" para "DATA_B"
     STR R3, [R0, #WRREG]    @Sinal de start
@@ -287,6 +307,10 @@ set_sprite:
     MOV R3, #0             @Salvado a constante "0"
     MOV R4, #1             @Salvando a constante "1"
     STR R3, [R0, #WRREG]   @Desativando o sinal de "start"
+    @Verificando se há espaço no buffer:
+    PUSH {R0}
+    BL buffer_overflow
+    POP {R0}
     STR R2, [R0, #DATA_A]  @"opcode: 0000" e "registrador" para "DATA_A"
     STR R1, [R0, #DATA_B]  @"offset", "coluna", "linha", "sp"
     STR R4, [R0, #WRREG]   @Sinal de "start"

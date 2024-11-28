@@ -8,6 +8,7 @@ int main(){
     pthread_t keys_thread;           // Thread dos botões que alteram o estado do jogo.
     pthread_t sprite_animation;      // Thread de animação dos sprites.
     pthread_t score_gameover_thread; // Thread que exibe a pontuação e o "GAMEOVER" na tela.
+    pthread_t clouds_thread;         // Thread das nuvens.
     physical_to_virtual();           // Mapeando os endereços do VGA.
     open_memory();                   // Abrindo a memória para o "ADXL345" e "GPIO".
     I2C0_mapping();                  // Mapeando os endereços do "I2C0".
@@ -17,7 +18,7 @@ int main(){
     setting_ADXL345();               // Calibrando o "ADXL345".
     linux_event_file();              // Abrindo o arquivo de leitura de eventos do Linux.
     clean_screen();                  // Limpando a tela.
-    background_color(COLOR_CYAN);    // Mudando a cor do background.
+    background_color(bg_color);      // Mudando a cor do background.
     flappy_bird_sprites();           // Colocando os sprites do "Flappy Bird" na memória.  
     set_players();                   // Exibindo os sprites dos jogadores. 
     pthread_create(&player1_input_thread, NULL, check_player1_input, NULL);      // Verificando se há entradas e atualizando a posição do jogador 1.
@@ -25,8 +26,12 @@ int main(){
     pthread_create(&keys_thread, NULL, check_buttons, NULL);                     // Verificando os botões "KEY" como entradas que alteram o fluxo do jogo.
     pthread_create(&sprite_animation, NULL, sp_animation, NULL);                 // Animando os sprites.
     pthread_create(&score_gameover_thread, NULL, show_score_and_gameover, NULL); // Exibindo a pontuação e o "GAMEOVER" na tela.
-    while(!(player1_gameover && player2_gameover))
-        set_pipe();                  // Exibição e deslocamento dos canos na tela.
+    pthread_create(&clouds_thread, NULL, render_clouds, NULL);                   // Renderizando as nuvens na tela.
+    while(!game_exit){
+        // Exibição e deslocamento dos canos na tela:
+        while(!(player1_gameover && player2_gameover))
+            set_pipe();
+    }
     show_gameover_screen();          // Exibindo a tela "GAMEOVER" novamente.
     set_players();                   // Removendo os sprites dos jogadores, no fim de jogo.
     close(fd);                       // Fechando o arquivo de acesso a memória do Linux.
