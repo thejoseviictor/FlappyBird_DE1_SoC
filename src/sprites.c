@@ -112,9 +112,6 @@ int sprite_builder(int offset, const int sprite_array[20][20]){
         for(int column = 0; column < 21; column++){
             buffer_overflow();
             sprite_drawing(row, column, sprite_array[row-row_start][column]);
-            // Apagando a última linha do sprite no offset 3:
-            if(row == 80)
-                sprite_drawing(row, column, COLOR_ALPHA);
         }
     }
     return 0;
@@ -131,7 +128,7 @@ int flappy_bird_sprites(void){
 
 // Animação dos sprites dos jogadores (03 FPS):
 void* sp_animation(void* arg){
-    while(!(player1_gameover && player2_gameover)){
+    while(!game_exit){
         if(!player1_gameover){
             if(player1_sp_offset == 0)
                 player1_sp_offset = 1;
