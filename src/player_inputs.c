@@ -2,9 +2,6 @@
 
 #include "player_inputs.h"
 
-// Sensibilidade de movimento do sprite do jogador 1:
-int accelerometerSensitivity = 20;
-
 // Arquivo que acessa os eventos de entrada do Linux:
 int fd_event;
 
@@ -95,18 +92,20 @@ void read_mouse_axis(void){
 
 // O movimento horizontal do eixo X do acelerômetro, será convertido para movimento vertical do jogador 1.
 void* check_player1_input(void* arg){
+    int16_t last_x = read_x(); // Vai armazenar o valor de eixo X no estado anterior.
     while(!game_exit){
         int16_t x_axis = read_x(); // Lendo o valor do eixo X do acelerômetro "ADXL345".
         /**
         * Convertendo a coordenada de linha do sprite para coordenada de linha do background,
         * para verificar se houve colisão com as margens verticais da área do jogador 1.
         */
-        int player1_bg_row = sp_row_to_bg_row(player1_row_sprite + (x_axis / accelerometerSensitivity));
+        int player1_bg_row = sp_row_to_bg_row(player1_row_sprite + (x_axis / 10));
         // Verificando se não saiu da área jogável:
-        if(player1_bg_row >= 4 && player1_bg_row < 26){
-            player1_row_sprite += x_axis / accelerometerSensitivity; // Atualizando o valor de linha do sprite;
-            set_players(); // Atualizando as posições dos sprites dos jogadores.
+        if(player1_bg_row >= 4 && player1_bg_row < 26 && x_axis != last_x && (x_axis < -10 || x_axis > 10)){
+            player1_row_sprite += x_axis / 10; // Atualizando o valor de linha do sprite;
+            set_players();                     // Atualizando as posições dos sprites dos jogadores.
         }
+        last_x = x_axis;   // Salvando o valor do eixo X neste estado.
         while(on_pause){}  // Estado de pausa do jogo.
     }
     return NULL;
