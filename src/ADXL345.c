@@ -107,22 +107,22 @@ No Registrador BW_RATE - 0x2C:
 	Configuração Resultante: 0x0A
 No Registrador POWER_CTL - 0x2D:
 	Medição: Habilitada
-	Frequência de Leitura: 4Hz (4 vezes por segundo - 250ms)
-	Configuração Resultante: 0x0D
+	Frequência de Leitura: 8Hz (8 vezes por segundo 125ms)
+	Configuração Resultante: 0x08
 No Registrador DATA_FORMAT - 0x31:
 	Modo de Resolução: Alta
 	Intervalo de Aceleração (G-Range): +-2g.
-	Configuração Resultante: 0x01
+	Configuração Resultante: 0x00
 */
 void setting_ADXL345(void)
 {
     // Configurando o THRESH_ACT:
     * I2C0_DATA = THRESH_ACT + 0x400;
-    * I2C0_DATA = 0x04;
+    * I2C0_DATA = 0x0F;
 
     // Configurando o THRESH_INACT:
     * I2C0_DATA = THRESH_INACT + 0x400;
-    * I2C0_DATA = 0x02;
+    * I2C0_DATA = 0x0F;
 
     // Configurando o TIME_INACT:
     * I2C0_DATA = TIME_INACT + 0x400;
@@ -142,11 +142,11 @@ void setting_ADXL345(void)
 
     // Configurando o POWER_CTL:
     * I2C0_DATA = POWER_CTL + 0x400;
-    * I2C0_DATA = 0x0D;
+    * I2C0_DATA = 0x08;
 
     // Configurando o DATA_FORMAT:
     * I2C0_DATA = DATA_FORMAT + 0x400;
-    * I2C0_DATA = 0x01;
+    * I2C0_DATA = 0x00;
 }
 
 // Ler e retornar valores do Eixo X do ADXL345:
