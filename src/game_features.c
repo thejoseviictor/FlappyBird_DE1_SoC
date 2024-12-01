@@ -181,6 +181,7 @@ void* render_clouds(void* arg){
                 draw_polygon(3, 0, 0, 0, COLOR_WHITE, 0);
                 draw_polygon(4, 0, 0, 0, COLOR_WHITE, 0);
             }
+            while(on_pause){} // Estado de pausa do jogo.
             usleep(1000); // Tempo de deslocamento das nuvens.
         }
     }
@@ -331,7 +332,7 @@ int player_pipe_collision(int pipe_column, int pipe_disabled_row){
 }
 
 // Exibe os pontos dos jogadores em pontos do array bidimensional, que será exibido na tela:
-void* show_score_and_gameover(void* arg){
+void* show_score(void* arg){
     while(!game_exit){
         // Só será possível exibir "34" pontos em uma linha, então pontuações maiores
         // que "34" serão armazenadas em duas variáveis e exibidas em duas linhas.
@@ -411,8 +412,7 @@ void* show_score_and_gameover(void* arg){
                     column = 80;
             }
         }
-        render_background();      // Exibindo as pontuações na tela.
-        show_gameover_screen(); // Exibindo "GAMEOVER" na tela.
+        render_background(); // Exibindo as pontuações na tela.
     }
     return NULL;
 }

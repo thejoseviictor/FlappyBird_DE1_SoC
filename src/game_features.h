@@ -43,6 +43,6 @@ int sp_column_to_bg_column(int sp_column);
 int bg_row_to_sp_row(int bg_row);
 int bg_column_to_sp_column(int bg_column);
 int player_pipe_collision(int pipe_column, int pipe_disabled_row);
-void* show_score_and_gameover(void* arg);
+void* show_score(void* arg);
 
 #endif // GAME_FEATURES_H
