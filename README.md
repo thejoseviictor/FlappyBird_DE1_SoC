@@ -1,6 +1,3 @@
-# FlappyBird_DE1_SoC
-Recriando o jogo "Flappy Bird" no FPGA "DE1-SoC", para o "Problema 03" na disciplina de "Sistemas Digitais"
-
 <div align="justify">
 
   <h4>Universidade Estadual de Feira de Santana  
@@ -25,11 +22,11 @@ Recriando o jogo "Flappy Bird" no FPGA "DE1-SoC", para o "Problema 03" na discip
 
 </div>
 <p align="center">
-  <img src="Images/wtetris.jpeg" width = "600" />
+  <img src="images/title.gif" width = "600" />
   </p>
   <p align="center"><strong> </strong></p>
 
-<h2 align="center">Game inspirado no clássico Tetris, desenvolvido para o kit de desenvolvimento DE1-SoC utilizando linguagem C </h2>  
+<h2 align="center">Game inspirado no jogo Flappy Bird, desenvolvido para o kit de desenvolvimento DE1-SoC utilizando linguagem C e Assembly </h2>  
 
 <br>
 <br>
@@ -39,11 +36,11 @@ Recriando o jogo "Flappy Bird" no FPGA "DE1-SoC", para o "Problema 03" na discip
 
   <div align="justify">
   
-  No mundo da computação, seja ele dividido em software ou hardware, muitas pessoas se utilizam e aproveitam das quase infinitas possibilidades de conhecimentos e          ferramentas para serem utilizadas no dia a dia de forma produtiva e eficiente para as mais diversas funcionalidades e objetivos.  
+  No mundo da computação, seja ele dividido em software ou hardware, muitas pessoas se utilizam e aproveitam das quase infinitas possibilidades de conhecimentos e ferramentas para serem utilizadas no dia a dia de forma produtiva e eficiente para as mais diversas funcionalidades e objetivos.  
 
   Uma das vertentes é a área de jogos, que hoje é considerada uma gigantesca parte do entretenimento e mercado global (que faturou cerca de $187,7 bilhões em 2023) . A     cada ano que passa, o mundo dos games se torna mais avançado, em quesitos de memória, gráfico, comunicação online e armazenamento em nuvem.  
 
-  Entretanto, a nossa inspiração para o projeto remota ao ano de 1984, quando o pesquisador soviético Alexey Pajitnov desenvolveu o seu primeiro modelo do Tetris.  
+  Dessa vez, o jogo que temos como inspiração é o jogo Flappy Bird, criando e publicado no ano de 2013 pelo programador vietnamita Nguyễn Hà Đông e publicado pela empresa .GEARS Studio.
 
   </div>
 
@@ -54,12 +51,27 @@ Recriando o jogo "Flappy Bird" no FPGA "DE1-SoC", para o "Problema 03" na discip
 
   <div align="justify">
   
-  O projeto PBL1 teve como objetivo a utilização dos conceitos aprendidos em arquitetura de computadores e sistemas digitais, de forma prática, para a recriação do  jogo   tetris, atendendo os seguintes requisitos mínimos:   
+  O projeto PBL3 teve como objetivo a utilização dos conceitos aprendidos em arquitetura de computadores e sistemas digitais, de forma prática, para a recriação do  jogo Flappy Bird, atendendo os seguintes requisitos mínimos:   
 
-  * Utilizar o Kit de desenvolvimento DE1-SoC e os seus respectivos componentes;  
-  * O código deve ser escrito em linguagem C;  
-  * Não é permitido o uso de bibliotecas para o acelerômetro;  
-  * O jogo deve pontuar e eliminar agrupamentos.  
+ - O código deve ser escrito em linguagem C e a biblioteca do Processador Gráfico em Assembly;
+   
+ - O sistema só poderá utilizar os componentes disponíveis na placa DE1-SoC;
+   
+ - Deverá utilizar todas as funções implementadas na biblioteca do Processador Gráfico e no mínimo um novo sprite deve ser colocado na memória e utilizado no jogo;
+   
+ - Os dois jogadores devem jogar simultaneamente utilizando obrigatoriamente o acelerômetro, e adicionalmente o mouse;
+   
+ - A variação da velocidade no movimento deve ser refletida na ação do ator do jogo. Por exemplo, no jogo breakout a barra se move com velocidade maior se o movimento do mouse for brusco;
+   
+ - Informações do jogo (placar, vidas, etc.) devem na tela do jogo;
+   
+ - O jogo deve permitir ações do usuário através dos botões da DE1-SoC, no mínimo: a pausa, o retorno, o reinício e o término do jogo.
+    * O usuário poderá parar e reiniciar o jogo em qualquer momento;
+    * O usuário poderá sair do jogo em qualquer momento;
+
+  - Pelo menos dois elementos passivos do jogo deverão se mover;
+    
+  - Os jogos de tabuleiro e/ou turno (xadrez, dama, etc.), tetris e jogo da forca e da velha estão vetados. Adicionalmente, cada grupo deverá desenvolver um jogo diferente dos demais.
 
   </div>  
 
@@ -143,7 +155,18 @@ Os periféricos da placa DE1-SoC usados no projeto foram:
 
   O <a href="https://gcc.gnu.org/"> GNU Compiler Collection</a>, criado por Richard Stallman, é um conjunto de compiladores desenvolvidos pelo projeto GNU em 1987 com o objetivo de reunir o poder de compilação não só da Linguagem C, mas também C++, Objective-C, Fortran, Ada, Go e entre outros. Tem portabilidade para  Linux, macOS e Windows, alto desempenho e otimização. E por essas características, é um recurso utilizado para o desenvolvimento de projetos envolvendo a comunicação entre software e hardware.
 
-  </div> 
+  <h3> - Mouse: </h3>  
+  <div align="justify">  
+
+  ---.
+
+<br>
+
+
+  <p align="center">
+  <img src="Images/Monitor CTR Dell E773c.jpg" width = "400" />
+  </p>
+  <p align="center"><strong>Mouse </strong></p>
 
   
 </div>
@@ -206,7 +229,7 @@ A função mover é responsável pelo movimento lateral da peça. Ela analisa se
 
   </div>  
 
-  <h3>- Movimentação de peças: </h2>
+  <h3>- Movimentação dos jogadores: </h2>
   <div align="justify">
 
   A lógica de movimentação das peças utiliza os sensores de força G do acelerômetro ADXL345, presente no FPGA DE1-SoC Cyclone V.<br>
