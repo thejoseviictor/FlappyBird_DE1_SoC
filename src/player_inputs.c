@@ -99,10 +99,10 @@ void* check_player1_input(void* arg){
         * Convertendo a coordenada de linha do sprite para coordenada de linha do background,
         * para verificar se houve colisão com as margens verticais da área do jogador 1.
         */
-        int player1_bg_row = sp_row_to_bg_row(player1_row_sprite + (x_axis / 10));
+        int player1_bg_row = sp_row_to_bg_row(player1_row_sprite + (x_axis / 5));
         // Verificando se não saiu da área jogável:
-        if(player1_bg_row >= 4 && player1_bg_row < 26 && x_axis != last_x && (x_axis < -10 || x_axis > 10)){
-            player1_row_sprite += x_axis / 10; // Atualizando o valor de linha do sprite;
+        if(player1_bg_row >= 4 && player1_bg_row < 26 && x_axis != last_x && ((x_axis > -128 && x_axis < -5) || (x_axis > 5 && x_axis < 128))){
+            player1_row_sprite += x_axis / 5; // Atualizando o valor de linha do sprite;
             set_players();                     // Atualizando as posições dos sprites dos jogadores.
         }
         last_x = x_axis;   // Salvando o valor do eixo X neste estado.
