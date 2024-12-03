@@ -111,8 +111,8 @@ No Registrador POWER_CTL - 0x2D:
 	Configuração Resultante: 0x08
 No Registrador DATA_FORMAT - 0x31:
 	Modo de Resolução: Alta
-	Intervalo de Aceleração (G-Range): +-2g.
-	Configuração Resultante: 0x00
+	Intervalo de Aceleração (G-Range): +-4g.
+	Configuração Resultante: 0x01
 */
 void setting_ADXL345(void)
 {
@@ -146,7 +146,7 @@ void setting_ADXL345(void)
 
     // Configurando o DATA_FORMAT:
     * I2C0_DATA = DATA_FORMAT + 0x400;
-    * I2C0_DATA = 0x00;
+    * I2C0_DATA = 0x01;
 }
 
 // Ler e retornar valores do Eixo X do ADXL345:
