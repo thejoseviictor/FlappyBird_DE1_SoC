@@ -298,7 +298,7 @@ Nessa seção será tratada a descrição da parte gráfica, movimentação, apr
 <br>
 <br>
 
-<h3>- Sprites</h3>  
+<h3>- Sprites e animação</h3>  
   <div align="justify">
 
 <div align="justify">
@@ -307,6 +307,19 @@ Os novos sprites foram desenvolvidos na resolução máxima de “20x20” pixel
 A memória de sprites tem as seguintes dimensões: “640” linhas por “20” colunas. Portanto, o offset de um sprite define a sua posição de linha na memória. Por exemplo, o sprite com offset “4” terá as suas linhas seguindo o intervalo de “80” até “99”. O cálculo da linha inicial do sprite segue a seguinte equação: 0 + (offset * 20), e o da linha final: linha inicial + 20. Além disso, todos os sprites na memória têm as mesmas coordenadas de coluna, seguindo o intervalo de “0” até “19”.
 Com base no que foi dito, é possível desenhar um sprite específico usando um array bidimensional “20x20”, contendo em suas posições os valores das cores de cada pixel.
 Por fim, esse array bidimensional será enviado como parâmetro da função “sprite_drawing”. Nela o cálculo da posição de memória, com 14 bits, seguirá a seguinte equação: (linha * 20) + coluna.<br>
+
+As funções responsáveis pelo armazenamento, exibição e animação dos sprites estão no arquivo "sprites.c" e são as descritas abaixo:
+
+<strong>int sprite_builder(int offset, const int sprite_array[20][20]);</strong><br>
+Função responsável por modular os sprites .
+Os sprites são escritos verticalmente, percorrendo e modulando o sprite bidimensionalemnte.
+
+<strong>int flappy_bird_sprites(void);</strong><br>
+Função responsável por guardar os 4 sprites modulados para o jogo na memória.
+
+<strong>void* sp_animation(void* arg);</strong><br>
+Função responsável pela animação dos sprites dos jogadores 1 e 2, simulando animação de voo para o jogo "Flappy Bird".
+A animação tem 3 FPS (frames per second).
 
 </div>
 
